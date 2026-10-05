@@ -1,0 +1,63 @@
+<div class="container py-4">
+  <h1 class="h3 mb-4">Eventi ad Avetrana</h1>
+
+  <!-- Filtri -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label">Categoria</label>
+        <select class="form-select" [(ngModel)]="selectedCategoryId" (ngModelChange)="loadEvents()">
+          <option [ngValue]="null">Tutte le categorie</option>
+          @for (cat of categories; track cat.id) {
+            <option [ngValue]="cat.id">{{ cat.nome }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Da</label>
+        <input type="date" class="form-control" [(ngModel)]="fromDate" (ngModelChange)="loadEvents()">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">A</label>
+        <input type="date" class="form-control" [(ngModel)]="toDate" (ngModelChange)="loadEvents()">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-outline-secondary w-100" (click)="resetFilters()">
+          <i class="bi bi-x-circle me-1"></i>Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  } @else if (events.length === 0) {
+    <p class="text-muted">Nessun evento trovato per i filtri selezionati.</p>
+  } @else {
+    <div class="row g-4">
+      @for (event of events; track event.id) {
+        <div class="col-md-4">
+          <a [routerLink]="['/eventi', event.id]" class="text-decoration-none text-dark">
+            <div class="card card-event h-100 shadow-sm">
+              @if (event.imageUrl) {
+                <img [src]="event.imageUrl" class="card-img-top" style="height:180px;object-fit:cover;" [alt]="event.title">
+              }
+              <div class="card-body">
+                <span class="badge bg-secondary mb-2">{{ event.categoryName }}</span>
+                <h5 class="card-title">{{ event.title }}</h5>
+                <p class="card-text small text-muted">
+                  <i class="bi bi-calendar-event me-1"></i>{{ event.startDate | date:'d MMMM y, HH:mm':'':'it' }}
+                </p>
+                <p class="card-text small">
+                  <i class="bi bi-geo-alt me-1"></i>{{ event.locationName }}
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+      }
+    </div>
+  }
+</div>

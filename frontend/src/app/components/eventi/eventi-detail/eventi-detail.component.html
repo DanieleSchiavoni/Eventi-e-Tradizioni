@@ -1,0 +1,42 @@
+<div class="container py-4">
+
+  @if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  } @else if (notFound) {
+    <div class="alert alert-warning">Evento non trovato.</div>
+    <a routerLink="/eventi" class="btn btn-avetrana">Torna agli eventi</a>
+  } @else if (event) {
+    <a routerLink="/eventi" class="btn btn-outline-secondary btn-sm mb-3">
+      <i class="bi bi-arrow-left me-1"></i>Torna agli eventi
+    </a>
+
+    <div class="card shadow-sm">
+      @if (event.imageUrl) {
+        <img [src]="event.imageUrl" class="card-img-top" style="max-height:400px;object-fit:cover;" [alt]="event.title">
+      }
+      <div class="card-body">
+        <span class="badge bg-secondary mb-2">
+          <i class="bi" [ngClass]="event.categoryIcon"></i> {{ event.categoryName }}
+        </span>
+        <h1 class="h3">{{ event.title }}</h1>
+
+        <ul class="list-unstyled text-muted mb-3">
+          <li><i class="bi bi-calendar-event me-2"></i>Inizio: {{ event.startDate | date:'EEEE d MMMM y, HH:mm':'':'it' }}</li>
+          @if (event.endDate) {
+            <li><i class="bi bi-calendar-check me-2"></i>Fine: {{ event.endDate | date:'EEEE d MMMM y, HH:mm':'':'it' }}</li>
+          }
+          @if (event.locationName) {
+            <li><i class="bi bi-geo-alt me-2"></i>{{ event.locationName }}</li>
+          }
+          @if (event.organizerName) {
+            <li><i class="bi bi-people me-2"></i>Organizzato da: {{ event.organizerName }}</li>
+          }
+        </ul>
+
+        <p class="card-text">{{ event.description }}</p>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,104 @@
+<div>
+  @if (errorMessage) {
+    <div class="alert alert-danger">{{ errorMessage }}</div>
+  }
+
+  @if (!showForm) {
+    <button class="btn btn-avetrana mb-3" (click)="newNotice()">
+      <i class="bi bi-plus-circle me-1"></i>Nuovo avviso
+    </button>
+  }
+
+  @if (showForm) {
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3">{{ editingId ? 'Modifica avviso' : 'Nuovo avviso' }}</h5>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label">Titolo *</label>
+              <input type="text" class="form-control" formControlName="title"
+                     [class.is-invalid]="form.get('title')?.invalid && form.get('title')?.touched">
+              <div class="invalid-feedback">Il titolo e' obbligatorio.</div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Priorita' *</label>
+              <select class="form-select" formControlName="priorita">
+                <option value="ALTA">Alta</option>
+                <option value="MEDIA">Media</option>
+                <option value="BASSE">Bassa</option>
+              </select>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Contenuto *</label>
+              <textarea class="form-control" rows="4" formControlName="content"
+                        [class.is-invalid]="form.get('content')?.invalid && form.get('content')?.touched"></textarea>
+              <div class="invalid-feedback">Il contenuto e' obbligatorio.</div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Evento collegato (opzionale)</label>
+              <select class="form-select" formControlName="eventoId">
+                <option [ngValue]="null">-- Nessun evento --</option>
+                @for (event of events; track event.id) {
+                  <option [ngValue]="event.id">{{ event.title }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-avetrana" [disabled]="saving">
+              @if (saving) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              Salva
+            </button>
+            <button type="button" class="btn btn-outline-secondary" (click)="cancelForm()">Annulla</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  @if (loading) {
+    <div class="text-center py-4">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Titolo</th>
+            <th>Priorita'</th>
+            <th>Evento collegato</th>
+            <th class="text-end">Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (notice of notices; track notice.id) {
+            <tr>
+              <td>{{ notice.title }}</td>
+              <td><span class="badge" [ngClass]="priorityBadgeClass(notice.priorita)">{{ notice.priorita }}</span></td>
+              <td>{{ notice.eventoTitle || '-' }}</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-secondary me-1" (click)="editNotice(notice)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="deleteNotice(notice)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="4" class="text-center text-muted py-3">Nessun avviso presente.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

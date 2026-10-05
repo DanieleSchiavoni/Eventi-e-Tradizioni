@@ -1,0 +1,89 @@
+<div>
+  @if (errorMessage) {
+    <div class="alert alert-danger">{{ errorMessage }}</div>
+  }
+
+  @if (!showForm) {
+    <button class="btn btn-avetrana mb-3" (click)="newCategory()">
+      <i class="bi bi-plus-circle me-1"></i>Nuova categoria
+    </button>
+  }
+
+  @if (showForm) {
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3">{{ editingId ? 'Modifica categoria' : 'Nuova categoria' }}</h5>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label">Nome *</label>
+              <input type="text" class="form-control" formControlName="nome"
+                     [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched">
+              <div class="invalid-feedback">Il nome e' obbligatorio.</div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Icona (Bootstrap Icons)</label>
+              <input type="text" class="form-control" formControlName="icona" placeholder="bi-bank">
+              <div class="form-text">
+                Vedi <a href="https://icons.getbootstrap.com/" target="_blank" rel="noopener">icons.getbootstrap.com</a>
+                per i nomi disponibili, es. <code>bi-bank</code>, <code>bi-cup-hot</code>, <code>bi-music-note-beamed</code>.
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-avetrana" [disabled]="saving">
+              @if (saving) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              Salva
+            </button>
+            <button type="button" class="btn btn-outline-secondary" (click)="cancelForm()">Annulla</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  @if (loading) {
+    <div class="text-center py-4">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Icona</th>
+            <th>Nome</th>
+            <th class="text-end">Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (category of categories; track category.id) {
+            <tr>
+              <td>
+                @if (category.icona) {
+                  <i class="bi" [ngClass]="category.icona"></i>
+                }
+              </td>
+              <td>{{ category.nome }}</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-secondary me-1" (click)="editCategory(category)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="deleteCategory(category)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="3" class="text-center text-muted py-3">Nessuna categoria presente.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,76 @@
+<section class="hero-banner text-center mb-5">
+  <div class="container">
+    <h1 class="display-5 fw-bold">Benvenuti ad Avetrana</h1>
+    <p class="lead">Eventi, tradizioni e punti di interesse della nostra comunita, tutti in un unico posto.</p>
+    <a routerLink="/mappa" class="btn btn-light btn-lg mt-2">
+      <i class="bi bi-geo-alt-fill me-1"></i>Esplora la mappa
+    </a>
+  </div>
+</section>
+
+<div class="container">
+
+  @if (urgentNotices.length > 0) {
+    <section class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h4 mb-0"><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Avvisi urgenti</h2>
+        <a routerLink="/avvisi" class="btn btn-sm btn-outline-secondary">Vedi tutti gli avvisi</a>
+      </div>
+      <div class="row g-3">
+        @for (notice of urgentNotices; track notice.id) {
+          <div class="col-md-4">
+            <div class="alert alert-danger h-100 mb-0">
+              <h6 class="fw-bold">{{ notice.title }}</h6>
+              <p class="mb-0 small">{{ notice.content }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  } @else {
+    <div class="text-end mb-4">
+      <a routerLink="/avvisi" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-megaphone me-1"></i>Vedi tutti gli avvisi
+      </a>
+    </div>
+  }
+
+  <section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="h4 mb-0"><i class="bi bi-stars text-warning me-2"></i>Eventi in evidenza</h2>
+      <a routerLink="/eventi" class="btn btn-sm btn-outline-secondary">Vedi tutti</a>
+    </div>
+
+    @if (loading) {
+      <div class="text-center py-4">
+        <div class="spinner-border" role="status"></div>
+      </div>
+    } @else if (featuredEvents.length === 0) {
+      <p class="text-muted">Nessun evento in programma al momento.</p>
+    } @else {
+      <div class="row g-4">
+        @for (event of featuredEvents; track event.id) {
+          <div class="col-md-4">
+            <a [routerLink]="['/eventi', event.id]" class="text-decoration-none text-dark">
+              <div class="card card-event h-100 shadow-sm">
+                @if (event.imageUrl) {
+                  <img [src]="event.imageUrl" class="card-img-top" style="height:180px;object-fit:cover;" [alt]="event.title">
+                }
+                <div class="card-body">
+                  <span class="badge bg-secondary mb-2">{{ event.categoryName }}</span>
+                  <h5 class="card-title">{{ event.title }}</h5>
+                  <p class="card-text small text-muted">
+                    <i class="bi bi-calendar-event me-1"></i>{{ event.startDate | date:'d MMMM y, HH:mm':'':'it' }}
+                  </p>
+                  <p class="card-text small">
+                    <i class="bi bi-geo-alt me-1"></i>{{ event.locationName }}
+                  </p>
+                </div>
+              </div>
+            </a>
+          </div>
+        }
+      </div>
+    }
+  </section>
+</div>

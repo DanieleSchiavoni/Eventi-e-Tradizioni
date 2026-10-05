@@ -1,0 +1,131 @@
+<div>
+  @if (errorMessage) {
+    <div class="alert alert-danger">{{ errorMessage }}</div>
+  }
+
+  @if (!showForm) {
+    <button class="btn btn-avetrana mb-3" (click)="newEvent()">
+      <i class="bi bi-plus-circle me-1"></i>Nuovo evento
+    </button>
+  }
+
+  @if (showForm) {
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3">{{ editingId ? 'Modifica evento' : 'Nuovo evento' }}</h5>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label">Titolo *</label>
+              <input type="text" class="form-control" formControlName="title"
+                     [class.is-invalid]="form.get('title')?.invalid && form.get('title')?.touched">
+              <div class="invalid-feedback">Il titolo e' obbligatorio.</div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Categoria</label>
+              <select class="form-select" formControlName="categoryId">
+                <option [ngValue]="null">-- Nessuna --</option>
+                @for (cat of categories; track cat.id) {
+                  <option [ngValue]="cat.id">{{ cat.nome }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Descrizione</label>
+              <textarea class="form-control" rows="3" formControlName="description"></textarea>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Data/ora inizio *</label>
+              <input type="datetime-local" class="form-control" formControlName="startDate"
+                     [class.is-invalid]="form.get('startDate')?.invalid && form.get('startDate')?.touched">
+              <div class="invalid-feedback">La data di inizio e' obbligatoria.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Data/ora fine</label>
+              <input type="datetime-local" class="form-control" formControlName="endDate"
+                     [class.is-invalid]="form.errors?.['dateRange'] && form.get('endDate')?.touched">
+              <div class="invalid-feedback">
+                La data/ora di fine non puo' essere precedente a quella di inizio.
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Luogo</label>
+              <select class="form-select" formControlName="locationId">
+                <option [ngValue]="null">-- Nessuno --</option>
+                @for (loc of locations; track loc.id) {
+                  <option [ngValue]="loc.id">{{ loc.name }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Organizzatore</label>
+              <input type="text" class="form-control" formControlName="organizerName">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">URL immagine</label>
+              <input type="url" class="form-control" formControlName="imageUrl" placeholder="https://...">
+            </div>
+          </div>
+
+          <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-avetrana" [disabled]="saving">
+              @if (saving) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              Salva
+            </button>
+            <button type="button" class="btn btn-outline-secondary" (click)="cancelForm()">Annulla</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  @if (loading) {
+    <div class="text-center py-4">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Titolo</th>
+            <th>Data inizio</th>
+            <th>Categoria</th>
+            <th>Luogo</th>
+            <th class="text-end">Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (event of events; track event.id) {
+            <tr>
+              <td>{{ event.title }}</td>
+              <td>{{ event.startDate | date:'d MMM y, HH:mm':'':'it' }}</td>
+              <td>{{ event.categoryName || '-' }}</td>
+              <td>{{ event.locationName || '-' }}</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-secondary me-1" (click)="editEvent(event)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="deleteEvent(event)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="text-center text-muted py-3">Nessun evento presente.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

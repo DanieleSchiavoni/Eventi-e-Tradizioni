@@ -1,0 +1,47 @@
+<div class="container-fluid py-4">
+  <div class="container mb-3">
+    <h1 class="h3">Mappa dei punti di interesse</h1>
+    <p class="text-muted">Scopri il Torrione Normanno-Svevo, il Palazzo Imperiale, le chiese e gli altri luoghi simbolo di Avetrana.</p>
+
+    <div class="row g-3 align-items-end mb-3">
+      <div class="col-md-4">
+        <label class="form-label">Filtra per categoria</label>
+        <select class="form-select" [(ngModel)]="selectedCategoryId" (ngModelChange)="loadLocations()">
+          <option [ngValue]="null">Tutte le categorie</option>
+          @for (cat of categories; track cat.id) {
+            <option [ngValue]="cat.id">{{ cat.nome }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 container">
+    <div class="col-lg-8">
+      <div id="map"></div>
+    </div>
+    <div class="col-lg-4">
+      <div class="list-group" style="max-height:70vh; overflow-y:auto;">
+        @if (loading) {
+          <div class="text-center py-4">
+            <div class="spinner-border" role="status"></div>
+          </div>
+        }
+        @for (loc of locations; track loc.id) {
+          <button type="button" class="list-group-item list-group-item-action" (click)="focusLocation(loc)">
+            <div class="d-flex justify-content-between">
+              <h6 class="mb-1">{{ loc.name }}</h6>
+              @if (loc.categoriaName) {
+                <span class="badge bg-secondary align-self-start">{{ loc.categoriaName }}</span>
+              }
+            </div>
+            <p class="mb-1 small text-muted">{{ loc.description }}</p>
+            @if (loc.address) {
+              <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>{{ loc.address }}</small>
+            }
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

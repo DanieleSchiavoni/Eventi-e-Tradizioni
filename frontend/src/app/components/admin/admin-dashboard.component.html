@@ -1,0 +1,33 @@
+<div class="container py-4">
+  <h1 class="h3 mb-4"><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</h1>
+
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="activeTab === 'eventi'" (click)="setTab('eventi')">
+        <i class="bi bi-calendar-event me-1"></i>Eventi
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="activeTab === 'luoghi'" (click)="setTab('luoghi')">
+        <i class="bi bi-geo-alt me-1"></i>Luoghi
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="activeTab === 'categorie'" (click)="setTab('categorie')">
+        <i class="bi bi-tags me-1"></i>Categorie
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="activeTab === 'avvisi'" (click)="setTab('avvisi')">
+        <i class="bi bi-megaphone me-1"></i>Avvisi
+      </button>
+    </li>
+  </ul>
+
+  @switch (activeTab) {
+    @case ('eventi') { <app-admin-eventi></app-admin-eventi> }
+    @case ('luoghi') { <app-admin-luoghi></app-admin-luoghi> }
+    @case ('categorie') { <app-admin-categorie></app-admin-categorie> }
+    @case ('avvisi') { <app-admin-notices></app-admin-notices> }
+  }
+</div>
